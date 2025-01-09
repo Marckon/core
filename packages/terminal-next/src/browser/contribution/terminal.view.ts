@@ -7,8 +7,9 @@ import {
   ToolbarRegistry,
   localize,
 } from '@opensumi/ide-core-browser';
-import { TERMINAL_CONTAINER_ID } from '@opensumi/ide-core-browser/lib/common/container-id';
+import { TERMINAL_CONTAINER_ID, TERMINAL_DROP_CONTAINER_ID } from '@opensumi/ide-core-browser/lib/common/container-id';
 
+import { DropArea } from '../component/droparea.view';
 import TerminalTabs from '../component/tab.view';
 import TerminalView from '../component/terminal.view';
 
@@ -58,5 +59,10 @@ export class TerminalRenderContribution implements ComponentContribution, TabBar
         titleComponent: TerminalTabs,
       },
     );
+    registry.register('@opensumi/ide-terminal-next-drop', [], {
+      component: DropArea,
+      containerId: TERMINAL_DROP_CONTAINER_ID,
+      hideTab: true,
+    });
   }
 }

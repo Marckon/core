@@ -19,7 +19,7 @@ export const defaultConfig: LayoutConfig = {
     ],
   },
   [SlotLocation.right]: {
-    modules: [],
+    modules: ['@opensumi/ide-terminal-next-drop'],
   },
   [SlotLocation.main]: {
     modules: ['@opensumi/ide-editor'],

@@ -11,3 +11,6 @@ export const EXPLORER_CONTAINER_ID = 'explorer';
 export const SEARCH_CONTAINER_ID = 'search';
 export const SCM_CONTAINER_ID = 'scm';
 export const EXTENSION_CONTAINER_ID = 'extension';
+
+// Right Panel 的 Container
+export const TERMINAL_DROP_CONTAINER_ID = 'terminal-drop';

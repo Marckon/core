@@ -12,8 +12,10 @@ import {
   useDesignStyles,
   useInjectable,
 } from '@opensumi/ide-core-browser';
+import { TERMINAL_DROP_CONTAINER_ID } from '@opensumi/ide-core-browser/lib/common/container-id';
 import { Loading } from '@opensumi/ide-core-browser/lib/components/loading';
 import { LayoutViewSizeConfig } from '@opensumi/ide-core-browser/lib/layout/constants';
+import { IMainLayoutService } from '@opensumi/ide-main-layout';
 import { IIconService } from '@opensumi/ide-theme';
 import { IconService } from '@opensumi/ide-theme/lib/browser';
 
@@ -22,6 +24,7 @@ import { ItemProps, ItemType } from '../../common';
 import styles from './tab.module.less';
 
 export const renderInfoItem = (props: ItemProps) => {
+  const layoutService = useInjectable<IMainLayoutService>(IMainLayoutService);
   const iconService = useInjectable<IIconService>(IconService);
   const handleSelect = debounce(() => props.onClick && props.onClick(), 20);
   const handleClose = debounce(() => props.onClose && props.onClose(), 20);
@@ -75,6 +78,8 @@ export const renderInfoItem = (props: ItemProps) => {
   const handleDragStart = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
       props.onDragStart?.(e);
+      layoutService.getTabbarService('right').updateCurrentContainerId(TERMINAL_DROP_CONTAINER_ID);
+      layoutService.toggleSlot('right', true);
     },
     [props.onDragStart],
   );
@@ -100,6 +105,7 @@ export const renderInfoItem = (props: ItemProps) => {
       if (ref.current) {
         ref.current.classList.remove('on-drag-over');
       }
+      layoutService.toggleSlot('right', false);
       props.onDrop?.(e);
     },
     [ref, props.onDrop],
