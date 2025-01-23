@@ -19,13 +19,19 @@ export const defaultConfig: LayoutConfig = {
     ],
   },
   [SlotLocation.right]: {
-    modules: [],
+    modules: ['drop-right'],
   },
   [SlotLocation.main]: {
     modules: ['@opensumi/ide-editor'],
   },
   [SlotLocation.bottom]: {
-    modules: ['@opensumi/ide-terminal-next', '@opensumi/ide-output', 'debug-console', '@opensumi/ide-markers'],
+    modules: [
+      'drop-bottom',
+      '@opensumi/ide-terminal-next',
+      '@opensumi/ide-output',
+      'debug-console',
+      '@opensumi/ide-markers',
+    ],
   },
   [SlotLocation.statusBar]: {
     modules: ['@opensumi/ide-status-bar'],

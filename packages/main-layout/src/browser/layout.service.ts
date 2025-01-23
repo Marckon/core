@@ -224,6 +224,72 @@ export class LayoutService extends WithEventBus implements IMainLayoutService {
     }
   };
 
+  findTabbarServiceByContainerId(containerId: string): TabbarService | undefined {
+    let tabbarService: undefined | TabbarService;
+    for (const value of this.tabbarServices.values()) {
+      if (value.containersMap.has(containerId)) {
+        tabbarService = value;
+        break;
+      }
+    }
+
+    return tabbarService;
+  }
+
+  moveContainerTo(containerId: string, to: string): void {
+    const fromTabbar = this.findTabbarServiceByContainerId(containerId);
+
+    if (!fromTabbar) {
+      this.logger.error(`cannot find container: ${containerId}`);
+      return;
+    }
+    const container = fromTabbar.getContainer(containerId);
+    if (!container) {
+      this.logger.error(`cannot find container: ${containerId}`);
+      return;
+    }
+
+    const toTabbar = this.getTabbarService(to);
+
+    fromTabbar.removeContainer(containerId);
+
+    if (!fromTabbar.visibleContainers.length || fromTabbar.currentContainerId.get() === containerId) {
+      this.toggleSlot(fromTabbar.location, false);
+    }
+    toTabbar.dynamicAddContainer(containerId, container);
+    const newHandler = this.injector.get(TabBarHandler, [containerId, this.getTabbarService(toTabbar.location)]);
+    this.handleMap.set(containerId, newHandler!);
+  }
+
+  showDropAreaForContainer(containerId: string): void {
+    const tabbarService = this.findTabbarServiceByContainerId(containerId);
+    const bottomService = this.tabbarServices.get('bottom');
+    const rightService = this.tabbarServices.get('right');
+    if (!tabbarService) {
+      this.logger.error(`cannot find container: ${containerId}`);
+      return;
+    }
+    if (tabbarService?.location === 'right') {
+      bottomService?.updateCurrentContainerId('drop-bottom');
+      this.toggleSlot('bottom', true);
+    }
+    if (tabbarService?.location === 'bottom') {
+      rightService?.updateCurrentContainerId('drop-right');
+      this.toggleSlot('right', true);
+    }
+  }
+
+  hideDropArea(): void {
+    const bottomService = this.tabbarServices.get('bottom');
+    const rightService = this.tabbarServices.get('right');
+    if (bottomService?.currentContainerId.get() === 'drop-bottom') {
+      bottomService.updateCurrentContainerId(bottomService.previousContainerId || '');
+    }
+    if (rightService?.currentContainerId.get() === 'drop-right') {
+      rightService.updateCurrentContainerId(rightService.previousContainerId || '');
+    }
+  }
+
   isVisible(location: string) {
     const tabbarService = this.getTabbarService(location);
     return !!tabbarService.currentContainerId.get();
